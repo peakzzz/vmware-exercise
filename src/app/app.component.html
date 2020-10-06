@@ -1,0 +1,99 @@
+<header class="header-4">
+  <div class="branding">
+      <a class="nav">
+          <clr-icon shape="vm"></clr-icon>
+          <span class="title">FrontEnd Exercise - Assets Filtering and Sorting</span>
+      </a>
+  </div>
+</header>
+<body>
+  <div class="main-container"> 
+    <app-header></app-header>
+    <div class="content-container">
+        <div class="content-area">
+          <div class="btn-group btn-primary"> 
+            <button class="btn btn-link"  (click) = "showFilter = !showFilter"><clr-icon shape="filter-2"></clr-icon> <span *ngIf="!showFilter"> Show Filter</span><span *ngIf="showFilter"> Hide Filter</span></button>           
+            <button class="btn btn-link" (click)= "removeSort()"><clr-icon shape="sort-by"></clr-icon>Remove Sort</button>
+          </div>
+          <div>
+            <table id="tableFilterAndSort" class="table" >
+              <thead>
+                  <tr>
+                    <th><span (click)="columnSort('id')" class="Sort">ID</span></th>
+                    <th><span (click)="columnSort('assetName')" class="Sort">ASSET NAME</span></th>
+                    <th><span (click)="columnSort('price')" class="Sort">PRICE</span></th>
+                    <th><span (click)="columnSort('lastUpdate')" class="Sort">DATE</span></th>
+                    <th><span (click)="columnSort('type')" class="Sort">ASSET TYPE</span></th>
+                  </tr>
+                  <tr *ngIf="showFilter">
+                    <th class="center">
+                      <form clrForm [formGroup]="idForm" (ngSubmit)="filterExcl('id', 'number')">
+                        <input  type="hidden" formControlName="columnName">
+                        <select clrSelect formControlName="operation"  >
+                          <option *ngFor="let item of numberFilters;" [value]="item.filtername">{{item.filtername}}</option>
+                        </select>
+                        <input clrInput type="number" formControlName="key" placeholder="Search number">
+                        <button type="submit" class="btn btn-link">Filter</button>
+                        <button type="submit" class="btn btn-link" (click)="clearFilter()">Clear</button>
+                      </form> 
+                    </th>
+                    <th class="center">
+                      <form clrForm [formGroup]="assetNameForm" (ngSubmit)="filterExcl('name', 'string')">
+                        <input  type="hidden" formControlName="columnName">
+                        <select clrSelect formControlName="operation"  >
+                          <option *ngFor="let item of stringFilters;" [value]="item.filtername">{{item.filtername}}</option>
+                        </select>
+                        <input clrInput type="text"  formControlName="key" placeholder="Search Asset Name ">
+                        <button type="submit" class="btn btn-link">Filter</button>
+                        <button type="submit" class="btn btn-link" (click)="clearFilter()">Clear</button>
+                      </form> 
+                    </th>
+                    <th class="center">
+                      <form clrForm [formGroup]="priceForm" (ngSubmit)="filterExcl('price', 'number')">
+                        <input  type="hidden" formControlName="columnName">
+                        <select clrSelect formControlName="operation"  >
+                          <option *ngFor="let item of numberFilters" [value]="item.filtername">{{item.filtername}}</option>
+                        </select>
+                        <input clrInput type="number"  formControlName="key" placeholder="Search Price">
+                        <button type="submit" class="btn btn-link">Filter</button>
+                        <button type="submit" class="btn btn-link" (click)="clearFilter()">Clear</button>
+                      </form> 
+                    </th>
+                    <th class="center">
+                      <form clrForm [formGroup]="dateForm">
+                      </form> 
+                    </th>
+                    <th class="center">
+                      <form clrForm [formGroup]="assettypeForm" (ngSubmit)="filterExcl('type', 'string')">
+                        <input  type="hidden" formControlName="columnName">
+                        <select clrSelect formControlName="operation"  >
+                          <option *ngFor="let item of stringFilters" [value]="item.filtername">{{item.filtername}}</option>
+                        </select>
+                        <input type="text" clrInput  formControlName="key" placeholder="Search Asset Type " >
+                        <button type="submit" class="btn btn-link">Filter</button>
+                        <button type="submit" class="btn btn-link" (click)="clearFilter()">Clear</button>
+                      </form> 
+                    </th>
+                  </tr>
+              </thead>
+              <tbody>
+                <tr mdbTableCol *ngFor="let asset of Assets |  paginate: {itemsPerPage: 10, currentPage:page, id: '1'}; let i = index">
+                  <th scope="row">{{asset.id}}</th>
+                  <td>{{asset.assetName}}</td>
+                  <td>{{asset.price}}</td>
+                  <td>{{asset.lastUpdate |  date:'MMM-dd-yyyy'}}</td>
+                  <td>{{asset.type}}</td>
+                </tr>
+              </tbody>
+          </table>
+          <app-custom-pagination (pageChange)="page = $event" id="1"
+              maxSize="10"
+              directionLinks="true"
+              autoHide="true">   
+          </app-custom-pagination>
+          </div>
+          <router-outlet></router-outlet>
+        </div>
+    </div>
+  </div>
+</body>
